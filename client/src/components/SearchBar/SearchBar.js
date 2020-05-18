@@ -1,7 +1,14 @@
 import React, { useState } from "react";
-import { makeStyles, IconButton, Paper, InputBase } from "@material-ui/core";
+import {
+  makeStyles,
+  IconButton,
+  Paper,
+  InputBase,
+} from "@material-ui/core";
 import SearchIcon from "@material-ui/icons/Search";
 import { SearchSpotify } from "../../SpotifyConnection/SpotifyConnection";
+
+const enterCharCode = 13;
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -26,22 +33,28 @@ const useStyles = makeStyles((theme) => ({
 const SearchBar = ({ setSearchResults }) => {
   const classes = useStyles();
   const [query, setQuery] = useState("");
-  
+
   const submit = async () => {
     console.log("searching for: ", query);
     let results = await SearchSpotify(query);
     setSearchResults(results);
-    console.log(results)
+  };
+
+  const searchBarEnter = (evt) => {
+    if (evt.charCode == enterCharCode) {
+      submit();
+    }
   };
 
   return (
-    <Paper component="form" className={classes.root}>
+    <Paper className={classes.root}>
       <InputBase
         autoFocus
         className={classes.input}
         placeholder="Search for a Song/Artist/Album"
         inputProps={{ "aria-label": "search for a Song, Artist or album" }}
         onChange={(e) => setQuery(e.target.value)}
+        onKeyPress={(e) => searchBarEnter(e)}
       />
       <IconButton
         className={classes.iconButton}
@@ -52,6 +65,6 @@ const SearchBar = ({ setSearchResults }) => {
       </IconButton>
     </Paper>
   );
-}
+};
 
 export { SearchBar };
