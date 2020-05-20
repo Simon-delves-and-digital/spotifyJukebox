@@ -119,10 +119,6 @@ app.get("/search", function (req, res) {
   };
 
   request.get(options, function (error, response, body) {
-    console.log("error", error);
-    console.log("response", response.toJSON());
-    console.log("body", body);
-    // console.log(response.headers)
     res.send(body);
   });
 });
@@ -139,7 +135,7 @@ app.post("/addSong", function (req, res) {
 
   // use the access token to access the Spotify Web API
   request.post(options, function (error, response, body) {
-    res.send(body);
+    res.send(response);
   });
 });
 

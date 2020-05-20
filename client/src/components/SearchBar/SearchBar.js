@@ -35,7 +35,6 @@ const SearchBar = ({ setSearchResults }) => {
   const [query, setQuery] = useState("");
 
   const submit = async () => {
-    console.log("searching for: ", query);
     let results = await SearchSpotify(query);
     setSearchResults(results);
   };
