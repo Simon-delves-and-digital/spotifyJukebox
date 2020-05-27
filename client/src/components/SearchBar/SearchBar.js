@@ -40,7 +40,7 @@ const SearchBar = ({ setSearchResults }) => {
   };
 
   const searchBarEnter = (evt) => {
-    if (evt.charCode == enterCharCode) {
+    if (evt.charCode === enterCharCode) {
       submit();
     }
   };

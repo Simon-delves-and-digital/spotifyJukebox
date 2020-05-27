@@ -1,5 +1,4 @@
 import { generateRandomString } from "./utils/utils.js";
-
 import express from "express";
 import cors from "cors";
 import querystring from "querystring";
@@ -27,7 +26,6 @@ app
 app.get("/login", (req, res) => {
   var state = generateRandomString(16);
   res.cookie(stateKey, state);
-
   res.redirect(
     "https://accounts.spotify.com/authorize?" +
       querystring.stringify({
@@ -41,6 +39,7 @@ app.get("/login", (req, res) => {
 });
 
 app.get("/callback", (req, res) => {
+
   var code = req.query.code || null;
   var state = req.query.state || null;
   var storedState = req.cookies ? req.cookies[stateKey] : null;
@@ -70,13 +69,14 @@ app.get("/callback", (req, res) => {
       json: true,
     };
 
-    request.post(authOptions, function (error, response, body) {
+    request.post(authOptions, (error, response, body) => {
       if (!error && response.statusCode === 200) {
         accessToken = body.access_token;
         refreshToken = body.refresh_token;
       }
+
+      res.redirect("http://localhost:3000/");
     });
-    res.redirect("/");
   }
 });
 
@@ -107,7 +107,7 @@ app.get("/refreshToken", (req, res) => {
   });
 });
 
-app.get("/search", function (req, res) {
+app.get("/search", (req, res) => {
   let searchTerm = req.query.query;
 
   var options = {
@@ -118,12 +118,12 @@ app.get("/search", function (req, res) {
     json: true,
   };
 
-  request.get(options, function (error, response, body) {
+  request.get(options, (error, response, body) => {
     res.send(body);
   });
 });
 
-app.post("/addSong", function (req, res) {
+app.post("/addSong", (req, res) => {
   let uri = req.query.uri;
 
   var options = {
@@ -134,9 +134,14 @@ app.post("/addSong", function (req, res) {
   };
 
   // use the access token to access the Spotify Web API
-  request.post(options, function (error, response, body) {
+  request.post(options, (error, response, body) => {
     res.send(response);
   });
+});
+
+app.get("/isLoggedIn", (req, res) => {
+  let isLoggedIn = accessToken ? true : false;
+  res.send({ isLoggedIn });
 });
 
 app.listen(PORT, () => {
